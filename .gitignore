@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 .venv/
 data/
+archive/
 artifacts/
 mlflow.db
 uploads/archive/
