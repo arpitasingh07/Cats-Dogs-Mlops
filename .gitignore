@@ -4,4 +4,4 @@ __pycache__/
 data/
 artifacts/
 mlflow.db
-uploads/
+uploads/archive/
