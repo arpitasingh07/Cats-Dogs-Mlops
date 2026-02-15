@@ -1,27 +1,31 @@
-name: CI
+name: CI Pipeline
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  build-test-docker:
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
 
-      - name: Run Tests
-        run: pytest -q
+      - name: Run Unit Tests
+        run: python -m pytest
 
       - name: Build Docker Image
-        run: docker build -t catsdogs-api .
+        run: docker build -t cats-dogs-api .
