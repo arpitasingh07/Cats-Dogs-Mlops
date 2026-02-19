@@ -3,6 +3,9 @@ import uuid
 import time
 import shutil
 import logging
+from fastapi import Request
+from fastapi.responses import Response
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
@@ -26,20 +29,39 @@ app = FastAPI(title="Cats vs Dogs Classifier API")
 request_count = 0
 total_latency = 0.0
 
+# ----------------------------
+# Prometheus Metrics
+# ----------------------------
+PROM_REQUEST_COUNT = Counter(
+    "api_request_count",
+    "Total number of API requests",
+    ["method", "endpoint"]
+)
+
+PROM_REQUEST_LATENCY = Histogram(
+    "api_request_latency_seconds",
+    "API request latency in seconds"
+)
+
 
 # ----------------------------
 # Monitoring Middleware
 # ----------------------------
 @app.middleware("http")
-async def monitor_requests(request, call_next):
+async def monitor_requests(request: Request, call_next):
     global request_count, total_latency
 
     start_time = time.time()
     response = await call_next(request)
     latency = time.time() - start_time
 
+    # Update custom counters
     request_count += 1
     total_latency += latency
+
+    # Update Prometheus metrics
+    PROM_REQUEST_COUNT.labels(request.method, request.url.path).inc()
+    PROM_REQUEST_LATENCY.observe(latency)
 
     logger.info(
         f"Request #{request_count} | "
@@ -101,3 +123,10 @@ async def predict(file: UploadFile = File(...)):
         # Clean up temp file
         if os.path.exists(temp_filename):
             os.remove(temp_filename)
+
+# ----------------------------
+# Prometheus Metrics Endpoint
+# ----------------------------
+@app.get("/metrics")
+def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
