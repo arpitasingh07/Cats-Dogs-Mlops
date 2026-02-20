@@ -140,7 +140,7 @@ curl http://localhost:8000/health
 
 ```
 
-### POst Deployment Evaluation
+### Post Deployment Evaluation
 
 ```
 python scripts/evaluate_deployed_model.py
