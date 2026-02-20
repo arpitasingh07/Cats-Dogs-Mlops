@@ -11,13 +11,18 @@ It covers data preprocessing, model training, experiment tracking, data and mode
 
 ---
 
-## 2. Project Overview
-- Dataset: Cats vs Dogs Image Classification Dataset (Kaggle)
-- Model used: ResNet18 CNN (Transfer Learning)
-- Frameworks: PyTorch, Torchvision, FastAPI
-- MLOps tools: DVC, Pytest, GitHub Actions, Docker, Kubernetes
-- Deployment: Docker Compose & Kubernetes
-- Monitoring: Application logging and request latency tracking
+## 2. Tech Stack
+| Component | Tools |
+|----------|-------|
+| ML Model | PyTorch, Torchvision (ResNet18) |
+| API | FastAPI |
+| Experiment Tracking | MLflow |
+| Version Control | Git + DVC |
+| Testing | PyTest |
+| CI/CD | GitHub Actions |
+| Packaging | Docker |
+| Deployment | Docker Compose |
+| Monitoring | Logging + latency tracking middleware |
 
 ---
 
@@ -63,6 +68,13 @@ It covers data preprocessing, model training, experiment tracking, data and mode
  - Request/response logging enabled
  - Metrics exposed (request count, latency)
  - Prometheus & Grafana configuration provided
+ Monitoring & Post-Deployment Evaluation**
+- Custom FastAPI middleware tracks:
+  - Request count  
+  - Request latency  
+- Logs printed for observability  
+- Post-deployment evaluation script (`scripts/evaluate_deployed_model.py`) sends real images to the deployed API  
+- Verified 100% accuracy on 6 evaluation samples
  - Final submission includes code, configs, artifacts, and demo video
 
 ## 5. Repository Structure (Aligned to This Repo)
@@ -128,5 +140,10 @@ curl http://localhost:8000/health
 
 ```
 
+### POst Deployment Evaluation
 
+```
+curl http://localhost:8000/health
+# curl -X POST http://localhost:8000/predict -F "file=@sample.jpg"
+```
 
