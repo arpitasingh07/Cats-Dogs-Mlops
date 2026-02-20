@@ -143,7 +143,7 @@ curl http://localhost:8000/health
 ### POst Deployment Evaluation
 
 ```
-curl http://localhost:8000/health
-# curl -X POST http://localhost:8000/predict -F "file=@sample.jpg"
+python scripts/evaluate_deployed_model.py
+
 ```
 
